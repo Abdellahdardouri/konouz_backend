@@ -1,12 +1,12 @@
 import { Router, Request, Response } from 'express';
 import stripe from '../config/stripe';
 import prisma from '../config/db';
-import { requireAuth, AuthRequest } from '../middleware/auth';
+import { optionalAuth, AuthRequest } from '../middleware/auth';
 import { success, error } from '../utils/response';
 
 const router = Router();
 
-router.post('/stripe/create-intent', requireAuth, async (req: AuthRequest, res: Response) => {
+router.post('/stripe/create-intent', optionalAuth, async (req: AuthRequest, res: Response) => {
   try {
     const { orderId } = req.body;
     if (!orderId) return error(res, 'معرف الطلب مطلوب');
