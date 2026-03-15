@@ -32,6 +32,23 @@ router.get('/', async (req: Request, res: Response) => {
   paginated(res, products, total, page, limit);
 });
 
+router.get('/:id', async (req: Request, res: Response) => {
+  try {
+    const product = await prisma.product.findUnique({
+      where: { id: req.params.id },
+      include: {
+        images: { orderBy: { sortOrder: 'asc' } },
+        variants: true,
+        category: true,
+      },
+    });
+    if (!product) return error(res, 'المنتج غير موجود', 404);
+    success(res, product);
+  } catch (e: any) {
+    error(res, e.message);
+  }
+});
+
 router.post('/', async (req: Request, res: Response) => {
   try {
     const { title, titleEn, description, categoryId, priceMAD, comparePriceMAD, tags, stockQuantity, isFeatured, isBestSeller, isNewArrival } = req.body;
