@@ -15,7 +15,12 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false,
 }));
 app.use(cors({
-  origin: [env.FRONTEND_URL, 'http://localhost:3000'],
+  origin: [
+    env.FRONTEND_URL,
+    'https://konouz.it.com',
+    'https://www.konouz.it.com',
+    'http://localhost:3000',
+  ],
   credentials: true,
 }));
 app.use(morgan('dev'));
