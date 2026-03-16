@@ -24,13 +24,14 @@ export async function register(data: {
   lastName: string;
   phone?: string;
 }) {
-  const existing = await prisma.user.findUnique({ where: { email: data.email } });
+  const emailNorm = data.email.toLowerCase().trim();
+  const existing = await prisma.user.findUnique({ where: { email: emailNorm } });
   if (existing) throw new Error('البريد الإلكتروني مسجل مسبقاً');
 
   const passwordHash = await bcrypt.hash(data.password, 12);
   const user = await prisma.user.create({
     data: {
-      email: data.email,
+      email: emailNorm,
       passwordHash,
       firstName: data.firstName,
       lastName: data.lastName,
@@ -46,7 +47,7 @@ export async function register(data: {
 }
 
 export async function login(email: string, password: string) {
-  const user = await prisma.user.findUnique({ where: { email } });
+  const user = await prisma.user.findUnique({ where: { email: email.toLowerCase().trim() } });
   if (!user) throw new Error('بيانات الدخول غير صحيحة');
 
   const valid = await bcrypt.compare(password, user.passwordHash);
